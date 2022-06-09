@@ -1,0 +1,9 @@
+/* tabbar 样式 */
+@import "./miniprogram_npm/weui-miniprogram/weui-wxss/dist/style/weui.wxss";
+/* icon 样式 */
+@import "./src/styles/remixicon.wxss";
+
+page {
+	background-color: rgba(242, 242, 242, 0.81);
+	-webkit-overflow-scrolling: touch
+}

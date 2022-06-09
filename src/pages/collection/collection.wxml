@@ -1,0 +1,55 @@
+<view style="position: relative; height: {{ navHeight }}px;"></view>
+<!-- 导航栏 -->
+<navbar page-name="{{ pageName }}">
+  <view slot="rightIcon" class="listSelectIconWrap" bind:tap="handleShowSelectList">
+    <image class="listSelectIcon" src="/src/image/selectIcon0.png" mode="aspectFit" 
+      style="left: {{ 150 / ratio + pageName.length * 8 }}px;"
+    ></image>
+  </view>
+</navbar>
+<!-- 导航栏的下拉框 -->
+<view class="listSelectWrap" style="left: {{ windowWidth / 2 - 45 }}px; height: 0; {{ !selectIconRotate? 'border:0;': '' }}">
+  <scroll-view scroll-y="{{ true }}" style="max-height: {{ 36 * 8 }}px;">
+    <view catchtap="handleSelectList" style="background-color: {{ pageName === '运动'? 'rgb(243, 246, 249)': 'white'}};">
+      <view style="height: 35px;">全部</view>
+      <view style="border-top: 1px solid rgba(187, 187, 187, 1);"></view>
+    </view>
+    <view wx:for="{{ types }}" wx:key="title" data-index="{{ index }}" catch:tap="handleSelectList" 
+      style="position: relative; background-color: {{ pageName === item.title? 'rgb(243, 246, 249)': 'white'}};"
+    >
+      <view style="height: 35px; overflow-x: scroll;">{{ item }}</view>
+      <view wx:if="{{ index + 1 < types.length }}" style="border-top: 1px solid rgba(187, 187, 187, 1);"></view>
+    </view>
+  </scroll-view>
+</view>
+<!-- 弹窗背景点击遮掩 -->
+<view wx:if="{{ selectIconRotate }}" catchtap="handleShowSelectList" style="position: absolute; width: 100%; height: {{ windowHeight - 84 }}px; z-index: 1;"></view>
+<!-- 左侧栏背景遮掩 -->
+<view wx:if="{{ showMenu }}" class="menu-mask" style="height: {{ windowHeight * ratio }}rpx; top: {{ -navHeight }}px; z-index: 1;" 
+  bind:tap="handleCloseMask" catch:touchmove="catchTouchMove"
+></view>
+
+<view style="position: relative; height: {{ (windowHeight - navHeight) * ratio }}rpx; overflow-y: scroll;">
+  <view style="padding-bottom: {{250 * ratio}}rpx;">
+  <!-- 今天的任务清单 -->
+    <view class="collection-task-title">
+      <text>{{ pageName }}</text>
+      <image src="/src/image/task-circle.png" mode="aspectFit" style="height: 32rpx; width: 32rpx; position: absolute; margin-top: 42rpx; margin-left: 24rpx;"></image>
+      <!-- <view class="task-left-line" style="margin-left: 38rpx; margin-top: 64rpx; height: 32rpx;"></view> -->
+    </view>
+
+		<!-- 运动卡片 -->
+		<view style="height: 200rpx; margin-top: 20rpx;" wx:for="{{ motionsShow }}" wx:key="index">
+      <image src="/src/image/task-circle.png" mode="aspectFit" style="height: 16rpx; width: 16rpx; position: absolute; margin-left: -30rpx;"></image>
+      <!-- <view class="task-left-line" style="height: {{ index + 1 < motionsShow.length? '224rpx': '177rpx' }};"></view> -->
+      <image class="motion-image" src="{{item.image}}" mode="aspectFill"></image>
+			<!-- <task-item catch:tap="handleEditor" image="{{item.image}}" data-type="{{ item.type }}" content="{{ item.type }}"/> -->
+    </view>
+  </view>
+</view>
+
+
+<!-- 弹窗提示用户 -->
+<mp-dialog title="{{ dialogTitle }}" show="{{ dialogShow }}" mask="{{ true }}" mask-closable="{{ true }}" buttons="{{ dialogButtons }}" catch:buttontap="handleDialogButton">
+  {{ dialogContents }}
+</mp-dialog>

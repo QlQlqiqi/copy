@@ -1,2 +1,3 @@
-# -
-用 self-discipline-tree-hole 仓库代码魔改的
+软工大作业
+
+魔改《自律树洞》小程序

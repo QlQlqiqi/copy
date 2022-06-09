@@ -1,0 +1,41 @@
+<view style="position: relative; height: {{ navHeight }}px;"></view>
+<!-- 导航栏 -->
+<navbar page-name="今日回顾"></navbar>
+<!-- 背景遮掩 -->
+<view wx:if="{{ showMenu || showFeeling }}" class="menu-mask" style="height: {{ windowHeight * ratio }}rpx; top: {{ -navHeight }}px; z-index: 1;" 
+  bind:tap="handleCloseMask" catch:touchmove="catchTouchMove"
+></view>
+
+<view style="position: relative; width: 666rpx; height: 166rpx; margin-top: 12rpx; margin-left: 42rpx; background-color: white; border-radius: 14rpx;">
+	<image wx:for="{{ stars }}" wx:key="index" mode="aspectFit" class="review-stars"
+		src="{{ starsNumber > index? '/src/image/star-finished.svg': '/src/image/star-unfinished.svg' }}"
+		style="left: {{ item.left + 'rpx' }}; top: {{ item.top + 'rpx' }};"
+	></image>
+</view>
+
+<view style="position: relative; height: 142rpx; width: 666rpx; margin-top: 14rpx; margin-left: 42rpx; background-color: white; border-radius: 14rpx;">
+	<text class="evalute-title" style="left: 60rpx;">今日完成</text>
+	<text class="evalute-title" style="left: 266rpx;">今日评星</text>
+	<text class="evalute-title" style="left: 460rpx;">今日效率</text>
+	<text class="evalute-content" style="margin-left: 100rpx;">{{ finishedTasks.length }}</text>
+	<text class="evalute-content" style="margin-left: 294rpx;">{{ starsNumber }}星</text>
+	<text class="evalute-content" style="margin-left: 512rpx;">{{ starsNumber <= 1? "低": starsNumber >= 5? "高": "中" }}</text>
+</view>
+
+<view style="position: relative; width: 666rpx; height: {{ contentHeight }}rpx; margin-top: 16rpx; margin-left: 42rpx; background-color: white; border-radius: 14rpx; color: rgba(21, 74, 25, 1); padding-bottom: 40rpx; overflow-y: scroll;">
+	<text style="display: inline-block; margin: 26rpx 0 0 38rpx; font-size: 40rpx;">已完成运动</text>
+	<image src="/src/image/review-history.svg" bind:tap="handleNavigateToHistory" style="position: absolute; width: 48rpx; height: 48rpx; top: 40rpx; left: 250rpx;"></image>
+	<view wx:for="{{ finishedMotionsShow }}" wx:key="index" data-index="{{ index }}" catch:tap="handleSelectTask" 
+		style="position: relative; width: 626rpx; min-height: 56rpx; margin: 40rpx 0 0 40rpx;"
+	>
+		<image src="/src/image/review-finished.svg" mode="aspectFill" style="position: absolute; width: 48rpx; height: 48rpx;"></image>
+		<view style="font-size: 32rpx; line-height: 38rpx; margin-left: 74rpx; width: 500rpx;">{{ item.content }}</view>
+		<image src="/src/image/editor-line.png" mode="aspectFill" style="position: absolute; left: 76rpx; bottom: 0; width: 454rpx; height: 2rpx;"></image>
+	</view>
+</view>
+
+<evaluate wx:if="{{ showFeeling }}" class="review-evaluate" 
+	rating="{{ rating || 1 }}" feeling="{{ feeling }}" catch:handleChangeRating="handleChangeRating"
+	catch:handleBackFeeling="handleBackFeeling" catch:handleInput="handleInput"
+	catch:handleEnsureFeeling="handleEnsureFeeling"
+></evaluate>

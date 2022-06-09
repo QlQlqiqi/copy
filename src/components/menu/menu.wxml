@@ -1,0 +1,95 @@
+<!-- <view> -->
+<view class="menu-wrap" style="position: relative; left: -750rpx; height: {{ menuHeight }}rpx; background-color: white; z-index: 12; width: 750rpx; overflow-y: scroll;">
+	<!-- 个人信息 -->
+	<view style="position: relative; height: 300rpx;">
+		<!-- 头像 -->
+		<!-- <open-data type="userAvatarUrl" class="menu-user-img"></open-data> -->
+		<button open-type="chooseAvatar" bindchooseavatar="handleChangeUserInfo" 
+			class="menu-user-img" style="z-index: 1; opacity: 0;"
+		></button>
+		<image src="{{ userInfo.avatarUrl }}" class="menu-user-img"></image>
+		<!-- 昵称 -->
+		<!-- <open-data type="userNickName" class="menu-user-nickname"></open-data> -->
+		<!-- <input class="menu-user-nickname" type="nickname"/> -->
+		<view class="menu-user-nickname">{{ userInfo.nickname }}</view>
+		<!-- 个性签名 -->
+		<input class="menu-user-sign" style="width: 400rpx;" value="{{ signText }}" catch:blur="blur" catch:input="input" maxLength="{{ 15 }}"></input>
+	</view>
+	<!-- 聚焦 -->
+	<view style="position: relative; height: 220rpx;">
+		<text class="menu-list" style="left: 230rpx;">聚焦</text>
+		<!-- 今日待办 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-to-do-today.svg" mode="aspectFit" style="left: 230rpx; top: 54rpx"></image>
+			<text class="menu-text" catch:tap="handleNavigateToToday" style="left: 284rpx; top: 54rpx">今日待办</text>
+			<text class="menu-remind" style="right: 40rpx; top: 54rpx;">{{ todoListNum }}</text>
+		</view>
+		<!-- 将来做 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-to-do-future.svg" mode="aspectFit" style="left: 230rpx; top: 124rpx"></image>
+			<text class="menu-text" catch:tap="handleNavigateToFuture" style="left: 284rpx; top: 124rpx">将来做</text>
+		</view>
+	</view>
+	<!-- 清单列表 -->
+	<view style="position: relative; height: {{ 156 + lists.length * 74 }}rpx;">
+		<text class="menu-list" style="left: 230rpx; top: 0rpx; position: relative;">清单列表</text>
+		<!-- 各类清单 -->
+		<movable-area wx:for="{{ lists }}" wx:key="index" style="min-width: 240rpx; height: 40rpx; margin: 40rpx 0 40rpx 188rpx;">
+			<movable-view out-of-bounds="{{ true }}" data-index="{{ index }}" bind:change="handleShowTrash" direction="horizontal" style="min-width: 200rpx; height: 40rpx; margin-left: 40rpx;">
+				<image class="menu-icon" src="{{ item.icon || '/src/image/menu-self-list0.svg' }}" mode="aspectFit"></image>
+				<text class="menu-text" catch:tap="handleNavigateToList" data-title="{{ item.title }}" style="margin-left: 50rpx;">{{ item.title }}</text>
+			</movable-view>
+			<view wx:if="{{ trashIndex === index }}" bind:tap="handleDeleteList" style="opacity: {{ trashOpacity }}; margin-left: 400rpx; background-color: #E53834; padding-left: 20rpx; height: 40rpx; width: 60rpx;">
+				<image src="/src/image/trash-icon.svg" mode="aspectFit" style="width: 40rpx; height: 40rpx;"></image>
+			</view>
+		</movable-area>
+		<!-- 添加清单 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-add-list.svg" mode="aspectFit" style="margin-left: 230rpx;"></image>
+			<text class="menu-text" catch:tap="handleNavigateToAddList" style="margin-left: 284rpx;">添加清单</text>
+		</view>
+	</view>
+	<!-- 完毕 -->
+	<view style="position: relative; height: 208rpx; margin-top: 40rpx;">
+		<text class="menu-list" style="left: 230rpx;">完毕</text>
+		<!-- 已完成 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-finish.svg" mode="aspectFit" style="left: 230rpx; top: 62rpx"></image>
+			<text class="menu-text" catch:tap="handleNavigateToFinished" style="left: 284rpx; top: 62rpx">已完成</text>
+		</view>
+		<!-- 过期任务 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-out.svg" mode="aspectFit" style="left: 230rpx; top: 132rpx"></image>
+			<text class="menu-text" catch:tap="handleNavigateToBeforeAndDelete" style="left: 284rpx; top: 132rpx">过期任务</text>
+		</view>
+	</view>
+	<!-- 功能 -->
+	<view style="position: relative; height: 250rpx; margin-bottom: {{ menuBottomBlcakHeight }}rpx;">
+		<text class="menu-list" style="left: 230rpx;">功能</text>
+		<!-- 我的分享 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-share.svg" mode="aspectFit" style="left: 230rpx; top: 54rpx"></image>
+			<text catch:tap="handleNavigateToShare" class="menu-text" style="left: 284rpx; top: 54rpx">我的分享</text>
+		</view>
+		<!-- 消息通知 -->
+		<view>
+			<image class="menu-icon" src="/src/image/message-remind.svg" mode="aspectFit" style="left: 230rpx; top: 124rpx"></image>
+			<text catch:tap="handleNavigateToMessageRemind" class="menu-text" style="left: 284rpx; top: 124rpx">消息通知</text>
+		</view>
+		<!-- 问题反馈 -->
+		<view>
+			<image class="menu-icon" src="/src/image/menu-question.svg" mode="aspectFit" style="left: 230rpx; top: 194rpx"></image>
+			<text catch:tap="handleFeedBack" class="menu-text" style="left: 284rpx; top: 194rpx">问题反馈</text>
+		</view>
+	</view>
+</view>
+<!-- </view> -->
+<mp-dialog mask="{{ true }}" mask-closable="{{ false }}" show="{{ showDialog }}" 
+	title="{{ dialogTitle }}" buttons="{{ buttons }}" bindbuttontap="handleDialogButtons"
+>
+	<textarea wx:if="{{ showTextArea }}" bind:input="handleSyncDialogTextArea" 
+		value="{{ dialogTextAreaValue }}" auto-focus="{{ true }}" placeholder="感谢您的反馈，我们会不断改进的~" 
+		style="height: 200rpx; margin-left: -30rpx; border: 2rpx black solid; border-radius: 20rpx;"
+	></textarea>
+	<view wx:else>{{ dialogContent }}</view>
+</mp-dialog>
