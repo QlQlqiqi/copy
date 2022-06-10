@@ -9,6 +9,7 @@
 		"src/pages/editor/editor",
 		"src/pages/review/review",
 		"src/pages/add-self-list/add-self-list",
+		"src/pages/camera/camera",
 		"src/pages/list/list"
 	],
 	"tabBar": {
@@ -38,5 +39,10 @@
 		"navigationStyle": "custom",
 		"backgroundColorTop": "#fff"
 	},
-	"sitemapLocation": "sitemap.json"
+	"sitemapLocation": "sitemap.json",
+	"permission": {
+		"scope.camera": {
+			"desc": "预览作用"
+		}
+	}
 }

@@ -33,11 +33,13 @@ Component({
 		motions: [
 			{
 				type: "俯卧撑",
-				image: "../../image/俯卧撑.png",
+				image: "https://s2.loli.net/2022/06/09/k5g6ftLqxvzBobm.png",
+				height: 270,
 			},
 			{
 				type: "俯卧撑",
-				image: "../../image/俯卧撑.png",
+				image: "https://s2.loli.net/2022/06/09/k5g6ftLqxvzBobm.png",
+				height: 270,
 			},
 		],
 	},
@@ -114,6 +116,13 @@ Component({
 	 * 组件的方法列表
 	 */
 	methods: {
+		handleStartMotion(e) {
+			const { index } = e.currentTarget.dataset;
+			wx.navigateTo({
+				url:
+					"/src/pages/camera/camera?type=" + this.data.motionsShow[index].type,
+			});
+		},
 		// 关闭左侧栏背景遮掩
 		handleCloseMask: function (e) {
 			this.setData({
@@ -240,9 +249,7 @@ Component({
 				noticeUpdateContent: app.globalData.noticeUpdateContent || false,
 			});
 
-			let { token, owner } = await util.getTokenAndOwner(
-				app.globalData.url + "login/login/"
-			);
+
 			return;
 			// 从后端拉取数据
 			wx.showLoading({
@@ -488,13 +495,15 @@ Component({
 			});
 		},
 		hide: function () {
-			let finishedMotions = [{
-				scores: [99,2],
-				messages: ["asd", 'sad'],
-				type: '俯卧撑',
-				date: new Date()
-			}]
-			wx.setStorageSync('finishedMotions', JSON.stringify(finishedMotions));
+			let finishedMotions = [
+				{
+					scores: [99, 2],
+					messages: ["asd", "sad"],
+					type: "俯卧撑",
+					date: new Date(),
+				},
+			];
+			wx.setStorageSync("finishedMotions", JSON.stringify(finishedMotions));
 		},
 	},
 

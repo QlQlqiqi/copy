@@ -1,0 +1,9 @@
+<view style="position: relative; height: {{ navHeight }}px;"></view>
+<!-- 导航栏 -->
+<navbar page-name="{{ pageName }}">
+	<image slot="backIcon" src="/src/image/back.png" bind:tap="handleBack" mode="aspectFit" style="width: 24px; height: 24px;"></image>
+</navbar>
+<camera device-position="back" flash="off" binderror="error" 
+	style="width: 100%; height: {{windowHeight - navHeight}}px;"
+></camera>
+<canvas class="canvas" id="myCanvas" type="2d" style="height: {{windowHeight - navHeight}}px; width: 750rpx;"></canvas>
