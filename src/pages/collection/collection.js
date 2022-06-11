@@ -32,11 +32,13 @@ Component({
 		// 任务卡片
 		motions: [
 			{
+				id: 0,
 				type: "俯卧撑",
 				image: "https://s2.loli.net/2022/06/09/k5g6ftLqxvzBobm.png",
 				height: 270,
 			},
 			{
+				id: 1,
 				type: "俯卧撑",
 				image: "https://s2.loli.net/2022/06/09/k5g6ftLqxvzBobm.png",
 				height: 270,
@@ -118,9 +120,13 @@ Component({
 	methods: {
 		handleStartMotion(e) {
 			const { index } = e.currentTarget.dataset;
+			const motion = this.data.motionsShow[index];
 			wx.navigateTo({
 				url:
-					"/src/pages/camera/camera?type=" + this.data.motionsShow[index].type,
+					"/src/pages/camera/camera?pageName=" +
+					motion.type +
+					"&id=" +
+					motion.id,
 			});
 		},
 		// 关闭左侧栏背景遮掩
@@ -237,6 +243,36 @@ Component({
 		},
 		// 拉取并设置数据
 		onLoad: async function () {
+			console.log(`${wx.env.USER_DATA_PATH}/1.jpg`);
+			const fs = wx.getFileSystemManager();
+
+			// fs.readFile({
+			// 	filePath: `${wx.env.USER_DATA_PATH}/1.jpg`,
+			// 	encoding: "base64",
+			// 	position: 0,
+			// 	success(res) {
+			// 		console.log(typeof res.data);
+			// 		util.myRequest({
+			// 			url: "http://192.168.31.195:5000/JudgeScore",
+			// 			method: "POST",
+			// 			data: {
+			// 				image: res.data,
+			// 				type: 0,
+			// 			},
+			// 		});
+			// 	},
+			// });
+			// try {
+
+			// 	.then(res => {
+			// 		console.log(res);
+			// 		let {points, score} = res.data;
+			// 		console.log(points, score);
+			// 	})
+			// }
+			// catch (e) {
+			// 	console.log(e)
+			// }
 			// 设置机型相关信息
 			let { navHeight, navTop, windowHeight, windowWidth } = app.globalData;
 			this.setData({
@@ -248,7 +284,10 @@ Component({
 				bottomLineHeight: app.globalData.bottomLineHeight,
 				noticeUpdateContent: app.globalData.noticeUpdateContent || false,
 			});
-
+			console.log(
+				windowHeight - navHeight - app.globalData.bottomLineHeight,
+				windowWidth
+			);
 
 			return;
 			// 从后端拉取数据
@@ -495,15 +534,15 @@ Component({
 			});
 		},
 		hide: function () {
-			let finishedMotions = [
-				{
-					scores: [99, 2],
-					messages: ["asd", "sad"],
-					type: "俯卧撑",
-					date: new Date(),
-				},
-			];
-			wx.setStorageSync("finishedMotions", JSON.stringify(finishedMotions));
+			// let finishedMotions = [
+			// 	{
+			// 		scores: [99, 2],
+			// 		messages: ["asd", "sad"],
+			// 		type: "俯卧撑",
+			// 		date: new Date(),
+			// 	},
+			// ];
+			// wx.setStorageSync("finishedMotions", JSON.stringify(finishedMotions));
 		},
 	},
 

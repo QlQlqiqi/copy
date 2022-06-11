@@ -6,4 +6,4 @@
 <camera device-position="back" flash="off" binderror="error" 
 	style="width: 100%; height: {{windowHeight - navHeight}}px;"
 ></camera>
-<canvas class="canvas" id="myCanvas" type="2d" style="height: {{windowHeight - navHeight}}px; width: 750rpx;"></canvas>
+<canvas class="canvas" id="myCanvas" type="2d" style="top: {{navHeight}}px; height: {{windowHeight - navHeight - bottomLineHeight}}px; width: {{windowWidth}}px;"></canvas>

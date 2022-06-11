@@ -2,7 +2,6 @@ const computedBehavior = require("miniprogram-computed").behavior;
 const util = require("../../utils/util");
 const store = require("../../store/store");
 const app = getApp();
-
 Component({
 	behaviors: [computedBehavior],
 	properties: {},
@@ -17,27 +16,21 @@ Component({
 		handleBack(e) {
 			wx.navigateBack();
 		},
-		post(picture) {
-			console.log({
-				url: this.data.url,
-				method: "POST",
-				data: JSON.stringify({
-					picture,
-					type: this.data.pageName,
-				}),
-			});
+		post(image) {
 			return util.myRequest({
-				url: this.data.url,
+				url: "http://192.168.31.195:5000/JudgeScore",
 				method: "POST",
-				data: JSON.stringify({
-					picture,
-					type: this.data.pageName,
-				}),
+				data: {
+					image,
+					type: 0,
+					// type: this.data. id,
+				},
 			});
 		},
 		onLoad(option) {
-			let { type } = option;
+			let { pageName, id } = option;
 			let { navHeight, navTop, windowHeight, windowWidth } = app.globalData;
+
 			this.setData({
 				navHeight,
 				navTop,
@@ -46,10 +39,13 @@ Component({
 				ratio: 750 / windowWidth,
 				bottomLineHeight: app.globalData.bottomLineHeight,
 				noticeUpdateContent: app.globalData.noticeUpdateContent || false,
-				pageName: type,
+				pageName,
 				url: app.globalData.addr,
+				id,
 			});
 			this.ctx = wx.createCameraContext();
+
+			
 
 			// 每 3s 发送一次请求
 			let _this = this;
@@ -57,88 +53,136 @@ Component({
 				_this.ctx.takePhoto({
 					quality: "high",
 					success: res => {
+						console.log(res);
+						wx.getImageInfo({
+							src: res.tempImagePath,
+							success(res) {
+								_this.setData({
+									imgWidth: res.width,
+									imgHeight: res.height,
+								});
+								// const ctx = _this.data.ctx;
+								// if(!ctx)	return;
+								// ctx.moveTo(0.3 * res.width / 1.66, 0.3 * res.height / 1.66);
+								// ctx.lineTo(0.5 * res.width / 1.66, 0.5 * res.height / 1.66);
+								// ctx.stroke();
+							},
+						});
 						const fs = wx.getFileSystemManager();
 						fs.readFile({
 							filePath: res.tempImagePath,
+							// filePath: `${wx.env.USER_DATA_PATH}/2.jpg`,
+							encoding: "base64",
 							position: 0,
 							success(res) {
-								_this.post(res).then(res => {
-									res = JSON.parse(res);
-									const { paths, scores, messages } = res;
+								console.log(res);
+								_this.post(res.data).then(res => {
+									console.log(res);
+									let { points, score, messages } = res.data;
+									messages = messages || "好";
 									// 记录结果
 									_this.setData({
-										paths,
+										paths: points,
 										messages,
-										scores,
+										scores: score,
 									});
+									_this.drawPaths(points);
+									// setTimeout(() => {
+									// 	_this.clearPaths();
+									// }, 300);
 								});
 							},
 						});
 					},
 				});
-			}, 2000);
-
-			wx.createSelectorQuery()
-				.select("#myCanvas")
-				.fields({ node: true, size: true })
-				.exec(res => {
-					// Canvas 对象
-					const canvas = res[0].node;
-					console.log(canvas);
-					if (!canvas) return;
-					// 渲染上下文
-					const ctx = canvas.getContext("2d");
-					const width = res[0].width;
-					const height = res[0].height;
-					const dpr = wx.getWindowInfo().pixelRatio;
-					canvas.width = width * dpr;
-					canvas.height = height * dpr;
-					ctx.scale(dpr, dpr);
-					ctx.fillStyle = "#ff0000";
-					_this.setData({
-						ctx,
-						width,
-						height,
-					});
-				});
+			}, 300);
 
 			setInterval(() => {
-				this.drawPaths([
-					[0, 0],
-					[0.5, 0],
-					[0.5, 0.5],
-					[0, 0.5],
-					[0, 0],
-				]);
-				setTimeout(() => {
-					this.clearPaths();
-				}, 1000);
-			}, 500);
+				wx.createSelectorQuery()
+					.select("#myCanvas")
+					.fields({ node: true, size: true })
+					.exec(res => {
+						// Canvas 对象
+						const canvas = res[0].node;
+						console.log(canvas);
+						if (!canvas) return;
+						// 渲染上下文
+						const ctx = canvas.getContext("2d");
+						const width = res[0].width;
+						const height = res[0].height;
+						const dpr = wx.getWindowInfo().pixelRatio;
+						canvas.width = width * 1;
+						canvas.height = height * 1;
+						ctx.scale(1, 1);
+						ctx.fillStyle = "#ff0000";
+						_this.setData({
+							ctx,
+							width,
+							height,
+						});
+					});
+			}, 100);
 		},
 
 		drawPaths(paths) {
-			let { ctx, width, height } = this.data;
+			if (!paths || paths.length != 33) return;
+			// 详见https://github.com/PixelChen24/YogaServer
+			this.drawPathsFromTo(paths, [8, 6, 5, 4, 0, 1, 2, 3, 7]);
+			this.drawPathsFromTo(paths, [9, 10]);
+			this.drawPathsFromTo(paths, [8, 6, 5, 4, 0, 1, 2, 3, 7]);
+			this.drawPathsFromTo(paths, [
+				22,
+				16,
+				20,
+				18,
+				16,
+				14,
+				12,
+				11,
+				13,
+				15,
+				17,
+				19,
+				15,
+				21,
+			]);
+			this.drawPathsFromTo(paths, [12, 24, 26, 28, 30, 32, 28]);
+			this.drawPathsFromTo(paths, [11, 23, 25, 27, 31, 29, 27]);
+			this.drawPathsFromTo(paths, [23, 24]);
+		},
+
+		// 根据下标顺序连接
+		drawPathsFromTo(paths, order) {
+			let { ctx, imgWidth, imgHeight, width, height, navHeight } = this.data;
 			if (!ctx) return;
-			ctx.moveTo(paths[0][0] * width, paths[0][1] * height);
-			for (let i = 1; i < paths.length; i++) {
-				ctx.lineTo(paths[i][0] * width, paths[i][1] * height);
-			}
+			ctx.moveTo(
+				(paths[order[0]][0] * width) / 1,
+				(paths[order[0]][1] * height) / 1
+			);
+			for (let i = 1; i < order.length; i++)
+				ctx.lineTo(
+					(paths[order[i]][0] * width) / 1,
+					(paths[order[i]][1] * height) / 1
+				);
 			ctx.stroke();
 		},
+
 		clearPaths() {
 			let { ctx, width, height } = this.data;
 			if (!ctx) return;
 			ctx.clearRect(0, 0, width, height);
 		},
-	},
-
-	pageLifetimes: {
-		hide() {
+		onUnload() {
 			let { scores, messages, pageName } = this.data;
 			if (!scores.length) return;
+			let sum = 0;
+			scores.forEach(item => sum += item);
+			sum /= scores.length;
+			scores = sum * 100;
+			messages = messages || "暂无评价";
 			let finishedMotion = {
-				scores,
 				messages,
+				scores: [scores],
 				type: pageName,
 				date: new Date(),
 			};
@@ -147,6 +191,6 @@ Component({
 			);
 			finishedMotions.push(finishedMotion);
 			wx.setStorageSync("finishedMotions", JSON.stringify(finishedMotions));
-		},
+		}
 	},
 });

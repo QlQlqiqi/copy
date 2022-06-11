@@ -2,7 +2,7 @@ App({
   globalData: {
     // url: 'http://297mo66766.imdo.co/',
 		url: 'https://witime.wizzstudio.com/',
-		addr: 'http://192.168.5.1:4523/mock/1050378/test',
+		addr: 'http://192.168.31.195:5000/JudgeScore',
     owner: 1,
     anames: [
 			{ icon: "/src/image/anameRed.svg", name: "小红" },

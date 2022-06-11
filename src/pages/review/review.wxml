@@ -18,7 +18,7 @@
 	<text class="evalute-title" style="left: 266rpx;">今日评星</text>
 	<text class="evalute-title" style="left: 460rpx;">今日效率</text>
 	<text class="evalute-content" style="margin-left: 100rpx;">{{ finishedTasks.length }}</text>
-	<text class="evalute-content" style="margin-left: 294rpx;">{{ starsNumber }}星</text>
+	<text class="evalute-content" style="margin-left: 294rpx;">{{ starsNumber || 0 }}星</text>
 	<text class="evalute-content" style="margin-left: 512rpx;">{{ starsNumber <= 1? "低": starsNumber >= 5? "高": "中" }}</text>
 </view>
 

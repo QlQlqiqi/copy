@@ -1,16 +1,10 @@
 {
 	"pages": [
 		"src/pages/collection/collection",
-		"src/pages/message-remind/message-remind",
-		"src/pages/web-view/web-view",
-		"src/pages/share/share",
 		"src/pages/add-chat/add-chat",
 		"src/pages/history/history",
-		"src/pages/editor/editor",
 		"src/pages/review/review",
-		"src/pages/add-self-list/add-self-list",
-		"src/pages/camera/camera",
-		"src/pages/list/list"
+		"src/pages/camera/camera"
 	],
 	"tabBar": {
 		"custom": true,

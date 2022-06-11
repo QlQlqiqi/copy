@@ -1,7 +1,0 @@
-{
-	"component": true,
-	"usingComponents": {
-		"navbar": "/src/components/navbar/navbar",
-		"mp-dialog": "weui-miniprogram/dialog/dialog"
-	}
-}
