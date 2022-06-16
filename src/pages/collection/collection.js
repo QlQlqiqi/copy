@@ -28,20 +28,26 @@ Component({
 		selectIconRotate: false,
 		pageName: "全部",
 		// 运动类型
-		types: ["仰卧起坐", "举哑铃"],
+		types: ["拉伸", "举哑铃", "经典瑜伽"],
 		// 任务卡片
 		motions: [
 			{
 				id: 0,
-				type: "俯卧撑",
-				image: "https://s2.loli.net/2022/06/09/k5g6ftLqxvzBobm.png",
-				height: 270,
+				type: "经典瑜伽",
+				image: "https://s2.loli.net/2022/06/16/eMQbiSBWHl5mtFD.png",
+				height: 300,
 			},
 			{
 				id: 1,
-				type: "俯卧撑",
-				image: "https://s2.loli.net/2022/06/09/k5g6ftLqxvzBobm.png",
-				height: 270,
+				type: "举哑铃",
+				image: "https://s2.loli.net/2022/06/16/SdL6JUjvK8cBErM.png",
+				height: 320,
+			},
+			{
+				id: 2,
+				type: "拉伸",
+				image: "https://s2.loli.net/2022/06/16/FdoPjxTERwh6YJA.png",
+				height: 600,
 			},
 		],
 	},
@@ -49,7 +55,8 @@ Component({
 	computed: {
 		motionsShow(data) {
 			return data.motions.filter(item => {
-				return data.pageName == "全部" || data.types.includes(item.type);
+				// console.log(data.pageName, data.types, item.type, data.types.includes(item.type))
+				return data.pageName == "全部" || data.pageName == item.type;
 			});
 		},
 		// 显示的今日任务
@@ -243,8 +250,8 @@ Component({
 		},
 		// 拉取并设置数据
 		onLoad: async function () {
-			console.log(`${wx.env.USER_DATA_PATH}/1.jpg`);
-			const fs = wx.getFileSystemManager();
+			// console.log(`${wx.env.USER_DATA_PATH}/1.jpg`);
+			// const fs = wx.getFileSystemManager();
 
 			// fs.readFile({
 			// 	filePath: `${wx.env.USER_DATA_PATH}/1.jpg`,
@@ -284,10 +291,10 @@ Component({
 				bottomLineHeight: app.globalData.bottomLineHeight,
 				noticeUpdateContent: app.globalData.noticeUpdateContent || false,
 			});
-			console.log(
-				windowHeight - navHeight - app.globalData.bottomLineHeight,
-				windowWidth
-			);
+			// console.log(
+			// 	windowHeight - navHeight - app.globalData.bottomLineHeight,
+			// 	windowWidth
+			// );
 
 			return;
 			// 从后端拉取数据

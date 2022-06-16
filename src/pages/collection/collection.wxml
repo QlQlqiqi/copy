@@ -53,3 +53,4 @@
 <mp-dialog title="{{ dialogTitle }}" show="{{ dialogShow }}" mask="{{ true }}" mask-closable="{{ true }}" buttons="{{ dialogButtons }}" catch:buttontap="handleDialogButton">
   {{ dialogContents }}
 </mp-dialog>
+

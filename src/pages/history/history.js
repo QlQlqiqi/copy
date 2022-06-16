@@ -95,7 +95,7 @@ Component({
 			data.finishedMotions.forEach(item => {
 				sum += item.scores[0];
 			});
-			return Math.ceil(sum / data.finishedMotions.length / 20);
+			return 5;
 		},
 	},
 

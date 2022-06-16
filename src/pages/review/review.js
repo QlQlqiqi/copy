@@ -63,7 +63,7 @@ Component({
 			data.finishedMotions.forEach(item => {
 				sum += item.scores[0];
 			})
-			return Math.ceil(sum / data.finishedMotions.length / 20);
+			return 5;
 		},
 		// 已完成任务的高度，单位：rpx
 		contentHeight: function (data) {

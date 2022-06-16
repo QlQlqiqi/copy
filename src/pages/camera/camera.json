@@ -1,6 +1,7 @@
 {
 	"component": true,
 	"usingComponents": {
-		"navbar": "/src/components/navbar/navbar"
+		"navbar": "/src/components/navbar/navbar",
+		"mp-toptips": "weui-miniprogram/toptips/toptips"
 	}
 }

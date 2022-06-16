@@ -17,13 +17,13 @@ Component({
 			wx.navigateBack();
 		},
 		post(image) {
+			let id = this.data.id;
 			return util.myRequest({
-				url: "http://192.168.31.195:5000/JudgeScore",
+				url: "http://192.168.5.216:5000/JudgeScore",
 				method: "POST",
 				data: {
 					image,
-					type: 0,
-					// type: this.data. id,
+					type: +id,
 				},
 			});
 		},
@@ -44,8 +44,6 @@ Component({
 				id,
 			});
 			this.ctx = wx.createCameraContext();
-
-			
 
 			// 每 3s 发送一次请求
 			let _this = this;
@@ -78,15 +76,22 @@ Component({
 								console.log(res);
 								_this.post(res.data).then(res => {
 									console.log(res);
-									let { points, score, messages } = res.data;
-									messages = messages || "好";
+									let { points, score, suggestions, status } = res.data;
+									if (status != "Success") return;
 									// 记录结果
 									_this.setData({
 										paths: points,
-										messages,
+										messages: suggestions || "暂无数据",
 										scores: score,
 									});
+									// if(!ctx)
+									// 	return;
+									// ctx.save();
+									_this.clearPaths();
 									_this.drawPaths(points);
+									// setTimeout(() => {
+									// 	ctx.restore();
+									// }, 50);
 									// setTimeout(() => {
 									// 	_this.clearPaths();
 									// }, 300);
@@ -95,33 +100,41 @@ Component({
 						});
 					},
 				});
-			}, 300);
+			}, 150);
 
 			setInterval(() => {
-				wx.createSelectorQuery()
-					.select("#myCanvas")
-					.fields({ node: true, size: true })
-					.exec(res => {
-						// Canvas 对象
-						const canvas = res[0].node;
-						console.log(canvas);
-						if (!canvas) return;
-						// 渲染上下文
-						const ctx = canvas.getContext("2d");
-						const width = res[0].width;
-						const height = res[0].height;
-						const dpr = wx.getWindowInfo().pixelRatio;
-						canvas.width = width * 1;
-						canvas.height = height * 1;
-						ctx.scale(1, 1);
-						ctx.fillStyle = "#ff0000";
-						_this.setData({
-							ctx,
-							width,
-							height,
-						});
+				_this.setData({
+					show: true,
+					msg: _this.data.messages[0],
+				});
+			}, 5000);
+
+			// setInterval(() => {
+			// _this.clearPaths();
+			wx.createSelectorQuery()
+				.select("#myCanvas")
+				.fields({ node: true, size: true })
+				.exec(res => {
+					// Canvas 对象
+					const canvas = res[0].node;
+					console.log(canvas);
+					if (!canvas) return;
+					// 渲染上下文
+					const ctx = canvas.getContext("2d");
+					const width = res[0].width;
+					const height = res[0].height;
+					const dpr = wx.getWindowInfo().pixelRatio;
+					canvas.width = width * 1;
+					canvas.height = height * 1;
+					ctx.scale(1, 1);
+					ctx.fillStyle = "#ff0000";
+					_this.setData({
+						ctx,
+						width,
+						height,
 					});
-			}, 100);
+				});
+			// }, 200);
 		},
 
 		drawPaths(paths) {
@@ -155,6 +168,7 @@ Component({
 		drawPathsFromTo(paths, order) {
 			let { ctx, imgWidth, imgHeight, width, height, navHeight } = this.data;
 			if (!ctx) return;
+			ctx.beginPath();
 			ctx.moveTo(
 				(paths[order[0]][0] * width) / 1,
 				(paths[order[0]][1] * height) / 1
@@ -164,6 +178,7 @@ Component({
 					(paths[order[i]][0] * width) / 1,
 					(paths[order[i]][1] * height) / 1
 				);
+			ctx.closePath();
 			ctx.stroke();
 		},
 
@@ -175,14 +190,9 @@ Component({
 		onUnload() {
 			let { scores, messages, pageName } = this.data;
 			if (!scores.length) return;
-			let sum = 0;
-			scores.forEach(item => sum += item);
-			sum /= scores.length;
-			scores = sum * 100;
-			messages = messages || "暂无评价";
 			let finishedMotion = {
 				messages,
-				scores: [scores],
+				scores: [(scores[0] * 100).toFixed(0)],
 				type: pageName,
 				date: new Date(),
 			};
@@ -191,6 +201,6 @@ Component({
 			);
 			finishedMotions.push(finishedMotion);
 			wx.setStorageSync("finishedMotions", JSON.stringify(finishedMotions));
-		}
+		},
 	},
 });

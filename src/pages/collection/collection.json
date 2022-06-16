@@ -4,6 +4,6 @@
     "navbar": "/src/components/navbar/navbar",
     "task-item": "/src/components/task-item/task-item",
     "menu": "/src/components/menu/menu",
-    "mp-dialog": "weui-miniprogram/dialog/dialog"
+		"mp-dialog": "weui-miniprogram/dialog/dialog"
   }
 }
